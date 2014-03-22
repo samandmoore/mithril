@@ -1,0 +1,22 @@
+ext {
+    guavaVersion = "16.0"
+    commonsEmailVersion = "1.3.2"
+}
+
+apply plugin: "java"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "com.google.guava:guava:${guavaVersion}"
+    compile "org.apache.commons:commons-email:${commonsEmailVersion}"
+
+    testCompile "junit:junit:4.11"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "1.10"
+}
