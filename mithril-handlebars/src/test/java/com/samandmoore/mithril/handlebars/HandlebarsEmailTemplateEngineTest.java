@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.jknack.handlebars.Handlebars;
-import com.samandmoore.mithril.AbstractTestBase;
+import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import com.samandmoore.mithril.Deliverable;
 import com.samandmoore.mithril.Emails;
 import com.samandmoore.mithril.MailerBase;
@@ -26,12 +26,12 @@ public class HandlebarsEmailTemplateEngineTest extends AbstractTestBase {
     @Before
     public void before() {
 
-        handlebars = new Handlebars(new ClasspathTemplateLoader("mailer", ".hbs.html"));
+        handlebars = new Handlebars(new ClassPathTemplateLoader("mailer", ".hbs.html"));
         MithrilEmailTemplateEngineProvider.setDefault(new HandlebarsEmailTemplateEngine(handlebars));
     }
 
     @Test
-    public void adsfasfd() {
+    public void createsAnHtmlEmail() {
 
         final TestMailer testMailer = new TestMailer();
 
