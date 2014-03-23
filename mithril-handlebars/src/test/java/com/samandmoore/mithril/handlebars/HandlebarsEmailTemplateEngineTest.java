@@ -19,14 +19,14 @@ import com.samandmoore.mithril.MithrilEmailTemplateEngineProvider;
  * @author Sam Moore
  * @since 3/22/14 11:05 PM
  */
-public class HandlebarsEmailTemplateEngineTest extends AbstractTestBase {
+public class HandlebarsEmailTemplateEngineTest {
 
     private Handlebars handlebars;
 
     @Before
     public void before() {
 
-        handlebars = new Handlebars(new ClassPathTemplateLoader("mailer", ".hbs.html"));
+        handlebars = new Handlebars(new ClassPathTemplateLoader("/mailer", ".hbs.html"));
         MithrilEmailTemplateEngineProvider.setDefault(new HandlebarsEmailTemplateEngine(handlebars));
     }
 

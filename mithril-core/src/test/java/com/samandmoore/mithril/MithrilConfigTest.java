@@ -10,7 +10,7 @@ import org.junit.Test;
  * @author Sam Moore
  * @since 3/22/14 8:55 PM
  */
-public class MithrilConfigTest extends AbstractTestBase {
+public class MithrilConfigTest {
 
     @Test
     public void loadsPropertiesFromDefaultFile() {

@@ -22,7 +22,7 @@ import com.google.common.collect.Iterables;
  * @author Sam Moore
  * @since 3/22/14 8:44 PM
  */
-public class MailerBaseTest extends AbstractTestBase {
+public class MailerBaseTest {
 
     @Before
     public void before() {
