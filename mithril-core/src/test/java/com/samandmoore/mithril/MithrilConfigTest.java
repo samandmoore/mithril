@@ -30,7 +30,7 @@ public class MithrilConfigTest extends AbstractTestBase {
     @Test
     public void loadsPropertiesFromCustomFile() {
 
-        final MithrilConfig config = new MithrilConfig.Builder().buildFromPropertiesFile("mithril-test.properties");
+        final MithrilConfig config = new MithrilConfig.Builder().fromPropertiesFile("mithril-test.properties").build();
 
         assertFalse(config.isEnabled());
         assertEquals("smtp.notgmail.com", config.getHost());

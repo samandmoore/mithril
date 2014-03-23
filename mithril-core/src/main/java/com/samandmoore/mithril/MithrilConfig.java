@@ -17,7 +17,7 @@ public final class MithrilConfig {
     private static final String PROPERTIES_FILE_NAME = "mithril.properties";
 
     private static final class DefaultHolder {
-        static final MithrilConfig instance = new Builder().buildFromPropertiesFile(PROPERTIES_FILE_NAME);
+        static final MithrilConfig instance = new Builder().fromPropertiesFile(PROPERTIES_FILE_NAME).build();
     }
 
     public static MithrilConfig getDefault() {
@@ -175,18 +175,7 @@ public final class MithrilConfig {
             return this;
         }
 
-        public MithrilConfig build() {
-
-            Validate.notNull(this.host);
-            Validate.isTrue(this.port > 0);
-            Validate.isTrue(!Strings.isNullOrEmpty(this.username));
-            Validate.isTrue(!Strings.isNullOrEmpty(this.password));
-            Validate.isTrue(!Strings.isNullOrEmpty(this.fromAddress));
-
-            return new MithrilConfig(this.enabled, this.host, this.port, this.useSsl, this.username, this.password, this.fromAddress, this.fromName);
-        }
-
-        public MithrilConfig buildFromPropertiesFile(final String propertiesFilename) {
+        public Builder fromPropertiesFile(final String propertiesFilename) {
 
             final Properties properties = new Properties();
 
@@ -197,7 +186,18 @@ public final class MithrilConfig {
                 throw new RuntimeException(String.format("Unable to load '%s' file for configuration.", propertiesFilename), e);
             }
 
-            return withProperties(properties).build();
+            return withProperties(properties);
+        }
+
+        public MithrilConfig build() {
+
+            Validate.notNull(this.host);
+            Validate.isTrue(this.port > 0);
+            Validate.isTrue(!Strings.isNullOrEmpty(this.username));
+            Validate.isTrue(!Strings.isNullOrEmpty(this.password));
+            Validate.isTrue(!Strings.isNullOrEmpty(this.fromAddress));
+
+            return new MithrilConfig(this.enabled, this.host, this.port, this.useSsl, this.username, this.password, this.fromAddress, this.fromName);
         }
     }
 }

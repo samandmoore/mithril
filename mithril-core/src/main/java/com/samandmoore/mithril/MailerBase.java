@@ -1,10 +1,11 @@
 package com.samandmoore.mithril;
 
+import static org.apache.commons.lang3.Validate.isTrue;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -85,9 +85,11 @@ public abstract class MailerBase {
         addAddressToCollection(bccs, address, name);
     }
 
-    protected final void subject(String subject) {
+    protected final void subject(final String subject, final Object... params) {
 
-        this.subject = subject;
+        this.subject = !Strings.isNullOrEmpty(subject)
+                ? String.format(subject, params)
+                : subject;
     }
 
     protected final void addToModel(final String key, final Object value) {
@@ -102,14 +104,14 @@ public abstract class MailerBase {
 
     protected final Deliverable mail(String template) {
 
-        Validate.isTrue(!Strings.isNullOrEmpty(subject));
-        Validate.isTrue(!tos.isEmpty());
+        isTrue(!Strings.isNullOrEmpty(this.subject));
+        isTrue(!this.tos.isEmpty());
 
         HtmlEmail email = buildEmailObject();
 
         try {
-            email.setSubject(Optional.fromNullable(subject).or("[No Subject]"));
-            email.setHtmlMsg(emailTemplateEngine.compile(template).apply(model));
+            email.setSubject(this.subject);
+            email.setHtmlMsg(emailTemplateEngine.compile(template).apply(this.model));
             email.setCharset(Charsets.UTF_8.toString());
         } catch (EmailException | IOException e) {
             throw new RuntimeException("Unable to create email", e);
