@@ -1,8 +1,11 @@
-# Mithril
+Mithril
+=======
 
 ### send emails in java, ActiveMailer style
 
-#### create a simple mailer class like this:
+-------
+
+create a simple mailer class like this:
 ```
 public class UserMailer extends MailerBase {
 
@@ -18,12 +21,12 @@ public class UserMailer extends MailerBase {
 }
 ```
 
-#### drop an html template (using the templating engine of your choice) into:
+drop an html template (using the templating engine of your choice) into:
 ```
 src/main/resources/mailer
 ```
 
-#### wire-up a mithril.properties file on your classpath
+wire-up a mithril.properties file on your classpath
 ```
 mithril.enabled: true
 mithril.host: smtp.gmail.com
@@ -34,19 +37,19 @@ mithril.password: password
 mithril.fromAddress: foo@example.org
 mithril.fromName: Mr. Foo
 ```
-#### or tell Mithril where to find those properties and pass it into your mailer
+or tell Mithril where to find those properties and pass it into your mailer
 ```
 final MithrilConfig config = new MithrilConfig.Builder().fromPropertiesFile("my-cool-props-file.properties").build();
 ```
 
-#### tell Mithril what template engine you want to use
-##### you can write your own -- by implementing two simple interfaces -- or you can use our handlebars engine powered by [handlebars.java](https://github.com/jknack/handlebars.java).
+tell Mithril what template engine you want to use
+you can write your own -- by implementing two simple interfaces -- or you can use our handlebars engine powered by [handlebars.java](https://github.com/jknack/handlebars.java).
 ```
 handlebars = new Handlebars(new ClassPathTemplateLoader("mailer", ".hbs.html"));
 MithrilEmailTemplateEngineProvider.setDefault(new HandlebarsEmailTemplateEngine(handlebars));
 ```
 
-#### then consume that simple mailer class like this:
+then consume that simple mailer class like this:
 ```
 public class EmailSending {
 
