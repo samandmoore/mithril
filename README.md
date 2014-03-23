@@ -1,7 +1,7 @@
 Mithril
 =======
 
-### send emails in java, ActiveMailer style
+## send emails in Java, ActiveMailer-style
 
 -------
 
@@ -60,3 +60,9 @@ public class EmailSending {
     }
 }
 ```
+
+## Author
+ [Sam Moore] (http://samandmoore.com)
+
+## License
+[Apache License 2](http://www.apache.org/licenses/LICENSE-2.0.html)
