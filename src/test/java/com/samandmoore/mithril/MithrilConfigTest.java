@@ -23,19 +23,23 @@ public class MithrilConfigTest extends AbstractTestBase {
         assertEquals(true, defaultConfig.isUseSsl());
         assertEquals("username", defaultConfig.getUsername());
         assertEquals("password", defaultConfig.getPassword());
+        assertEquals("foo@example.org", defaultConfig.getFromAddress());
+        assertEquals("Mr. Foo", defaultConfig.getFromName());
     }
 
     @Test
     public void loadsPropertiesFromCustomFile() {
 
-        final MithrilConfig defaultConfig = new MithrilConfig.Builder().buildFromPropertiesFile("mithril-test.properties");
+        final MithrilConfig config = new MithrilConfig.Builder().buildFromPropertiesFile("mithril-test.properties");
 
-        assertFalse(defaultConfig.isEnabled());
-        assertEquals("smtp.notgmail.com", defaultConfig.getHost());
-        assertEquals(1234, defaultConfig.getPort());
-        assertEquals(false, defaultConfig.isUseSsl());
-        assertEquals("testusername", defaultConfig.getUsername());
-        assertEquals("testpassword", defaultConfig.getPassword());
+        assertFalse(config.isEnabled());
+        assertEquals("smtp.notgmail.com", config.getHost());
+        assertEquals(1234, config.getPort());
+        assertEquals(false, config.isUseSsl());
+        assertEquals("testusername", config.getUsername());
+        assertEquals("testpassword", config.getPassword());
+        assertEquals("foo.test@example.org", config.getFromAddress());
+        assertEquals("Mr. Test Foo", config.getFromName());
     }
 
     @Test
@@ -48,6 +52,8 @@ public class MithrilConfigTest extends AbstractTestBase {
                 .withUsername("username")
                 .withPort(67676)
                 .withUseSsl(true)
+                .withFromAddress("from address")
+                .withFromName("from name")
                 .build();
 
         assertEquals(true, config.isEnabled());
@@ -56,6 +62,8 @@ public class MithrilConfigTest extends AbstractTestBase {
         assertEquals(true, config.isUseSsl());
         assertEquals("username", config.getUsername());
         assertEquals("password", config.getPassword());
+        assertEquals("from address", config.getFromAddress());
+        assertEquals("from name", config.getFromName());
     }
 
     @Test(expected = NullPointerException.class)
@@ -99,6 +107,18 @@ public class MithrilConfigTest extends AbstractTestBase {
                 .withPort(1)
                 .withUsername(null)
                 .withHost("adfasdfasd")
+                .build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void buildRequiresFromAddress() {
+
+        new MithrilConfig.Builder()
+                .withPassword("adsfads")
+                .withPort(1)
+                .withUsername("Adfasfd")
+                .withHost("adfasdfasd")
+                .withFromAddress(null)
                 .build();
     }
 }

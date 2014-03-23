@@ -43,7 +43,14 @@ public final class MithrilConfig {
     //mithril.password
     private final String password;
 
-    private MithrilConfig(final boolean enabled, final String host, final int port, final boolean useSsl, final String username, final String password) {
+    //mithril.fromAddress
+    private final String fromAddress;
+
+    //mithril.fromName
+    private final String fromName;
+
+    private MithrilConfig(final boolean enabled, final String host, final int port, final boolean useSsl, final String username, final String password,
+            final String fromAddress, final String fromName) {
 
         this.enabled = enabled;
         this.host = host;
@@ -51,6 +58,8 @@ public final class MithrilConfig {
         this.useSsl = useSsl;
         this.username = username;
         this.password = password;
+        this.fromAddress = fromAddress;
+        this.fromName = fromName;
     }
 
     public boolean isEnabled() {
@@ -83,6 +92,16 @@ public final class MithrilConfig {
         return password;
     }
 
+    public String getFromAddress() {
+
+        return fromAddress;
+    }
+
+    public String getFromName() {
+
+        return fromName;
+    }
+
     public static class Builder {
 
         private boolean enabled;
@@ -91,6 +110,8 @@ public final class MithrilConfig {
         private boolean useSsl;
         private String username;
         private String password;
+        private String fromAddress;
+        private String fromName;
 
         public Builder withEnabled(final boolean enabled) {
 
@@ -128,6 +149,18 @@ public final class MithrilConfig {
             return this;
         }
 
+        public Builder withFromAddress(final String fromAddress) {
+
+            this.fromAddress = fromAddress;
+            return this;
+        }
+
+        public Builder withFromName(final String fromName) {
+
+            this.fromName = fromName;
+            return this;
+        }
+
         private Builder withProperties(final Properties properties) {
 
             withEnabled(Boolean.parseBoolean(properties.getProperty("mithril.enabled")));
@@ -136,6 +169,8 @@ public final class MithrilConfig {
             withUseSsl(Boolean.parseBoolean(properties.getProperty("mithril.ssl")));
             withUsername(properties.getProperty("mithril.username"));
             withPassword(properties.getProperty("mithril.password"));
+            withFromAddress(properties.getProperty("mithril.fromAddress"));
+            withFromName(properties.getProperty("mithril.fromName"));
 
             return this;
         }
@@ -146,8 +181,9 @@ public final class MithrilConfig {
             Validate.isTrue(this.port > 0);
             Validate.isTrue(!Strings.isNullOrEmpty(this.username));
             Validate.isTrue(!Strings.isNullOrEmpty(this.password));
+            Validate.isTrue(!Strings.isNullOrEmpty(this.fromAddress));
 
-            return new MithrilConfig(this.enabled, this.host, this.port, this.useSsl, this.username, this.password);
+            return new MithrilConfig(this.enabled, this.host, this.port, this.useSsl, this.username, this.password, this.fromAddress, this.fromName);
         }
 
         public MithrilConfig buildFromPropertiesFile(final String propertiesFilename) {

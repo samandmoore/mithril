@@ -10,6 +10,8 @@ import javax.mail.Part;
 
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Functions;
 import com.google.common.base.Joiner;
@@ -22,7 +24,7 @@ import com.google.common.collect.Iterables;
  */
 final class Emails {
 
-    //private static final Logger logger = LoggerFactory.getLogger(Emails.class);
+    private static final Logger logger = LoggerFactory.getLogger(Emails.class);
 
     private Emails() {
 
@@ -48,7 +50,7 @@ final class Emails {
 
         content.append("\n");
 
-        //logger.info(content.toString());
+        logger.info(content.toString());
     }
 
     private static String getMessageBody(Email email) {
@@ -60,7 +62,7 @@ final class Emails {
             }
             body = getContent(email.getMimeMessage());
         } catch (IOException | MessagingException | EmailException e) {
-            //logger.error("unable to read email message body", e);
+            logger.error("unable to read email message body", e);
         }
 
         return body;

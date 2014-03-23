@@ -8,7 +8,10 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -20,11 +23,10 @@ import com.google.common.collect.Sets;
  */
 public abstract class MailerBase {
 
-    //private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private MithrilConfig config;
-
-    private EmailTemplateEngine emailTemplateEngine;
+    private final MithrilConfig config;
+    private final EmailTemplateEngine emailTemplateEngine;
 
     private final Map<String, Object> model;
     private final Set<MailAddress> tos;
@@ -34,11 +36,17 @@ public abstract class MailerBase {
 
     protected MailerBase() {
 
-        this(MithrilConfig.getDefault());
+        this(MithrilConfig.getDefault(), MithrilEmailTemplateEngineProvider.getDefault());
     }
 
-    protected MailerBase(final MithrilConfig config) {
+    protected MailerBase(final EmailTemplateEngine emailTemplateEngine) {
 
+        this(MithrilConfig.getDefault(), emailTemplateEngine);
+    }
+
+    protected MailerBase(final MithrilConfig config, final EmailTemplateEngine emailTemplateEngine) {
+
+        this.emailTemplateEngine = emailTemplateEngine;
         this.config = config;
         this.model = Maps.newHashMap();
         this.tos = Sets.newHashSet();
@@ -46,42 +54,42 @@ public abstract class MailerBase {
         this.bccs = Sets.newHashSet();
     }
 
-    protected void to(String address) {
+    protected final void to(String address) {
 
         to(address, "");
     }
 
-    protected void to(String address, String name) {
+    protected final void to(String address, String name) {
 
         addAddressToCollection(tos, address, name);
     }
 
-    protected void cc(String address) {
+    protected final void cc(String address) {
 
         cc(address, "");
     }
 
-    protected void cc(String address, String name) {
+    protected final void cc(String address, String name) {
 
         addAddressToCollection(ccs, address, name);
     }
 
-    protected void bcc(String address) {
+    protected final void bcc(String address) {
 
         bcc(address, "");
     }
 
-    protected void bcc(String address, String name) {
+    protected final void bcc(String address, String name) {
 
         addAddressToCollection(bccs, address, name);
     }
 
-    protected void subject(String subject) {
+    protected final void subject(String subject) {
 
         this.subject = subject;
     }
 
-    protected void addToModel(final String key, final Object value) {
+    protected final void addToModel(final String key, final Object value) {
 
         this.model.put(key, value);
     }
@@ -91,7 +99,7 @@ public abstract class MailerBase {
         set.add(new MailAddress(address, name));
     }
 
-    protected Deliverable mail(String template) {
+    protected final Deliverable mail(String template) {
 
         Validate.isTrue(!Strings.isNullOrEmpty(subject));
         Validate.isTrue(!tos.isEmpty());
@@ -99,13 +107,18 @@ public abstract class MailerBase {
         HtmlEmail email = buildEmailObject();
 
         try {
-            email.setSubject(subject);
+            email.setSubject(Optional.fromNullable(subject).or("[No Subject]"));
             email.setHtmlMsg(emailTemplateEngine.compile(template).apply(model));
         } catch (EmailException | IOException e) {
             throw new RuntimeException("Unable to create email", e);
         }
 
-        return new Deliverable(email, MAIL_ACTION);
+        return createDeliverable(email);
+    }
+
+    protected Deliverable createDeliverable(final HtmlEmail email) {
+
+        return new SimpleDeliverable(email, DEFAULT_MAIL_ACTION);
     }
 
     private HtmlEmail buildEmailObject() {
@@ -119,8 +132,8 @@ public abstract class MailerBase {
         email.setAuthentication(config.getUsername(), config.getPassword());
 
         try {
-            email.addReplyTo("noreply@samandmoore.com", "Mithril Bot");
-            email.setFrom("noreply@samandmoore.com", "Mithril Bot");
+            email.setFrom(config.getFromAddress(), config.getFromName());
+            //TODO: add support for reply-to
 
             for (MailAddress to : tos) {
                 email.addTo(to.address, to.name);
@@ -133,7 +146,6 @@ public abstract class MailerBase {
             for (MailAddress bcc : bccs) {
                 email.addBcc(bcc.address, bcc.name);
             }
-
         } catch (EmailException e) {
             throw new IllegalStateException("Unable to build email", e);
         }
@@ -178,12 +190,12 @@ public abstract class MailerBase {
         }
     }
 
-    private final Predicate<Email> MAIL_ACTION = new Predicate<Email>() {
+    private final Predicate<Email> DEFAULT_MAIL_ACTION = new Predicate<Email>() {
         @Override
         public boolean apply(Email email) {
 
             if (!config.isEnabled()) {
-                //logger.info("Not sending email because emailing is disabled");
+                logger.info("Not sending email because emailing is disabled");
 
                 Emails.print(email);
 

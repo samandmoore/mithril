@@ -19,6 +19,11 @@
     <orderEntry type="library" scope="TEST" name="Gradle: junit-4.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-lang3-3.3.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: slf4j-api-1.7.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: jcl-over-slf4j-1.7.6" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: jcl-over-slf4j-1.7.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: slf4j-simple-1.7.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: mockito-all-1.9.5" level="project" />
   </component>
 </module>
 
