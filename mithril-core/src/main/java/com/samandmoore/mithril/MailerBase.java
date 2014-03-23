@@ -11,6 +11,7 @@ import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -109,6 +110,7 @@ public abstract class MailerBase {
         try {
             email.setSubject(Optional.fromNullable(subject).or("[No Subject]"));
             email.setHtmlMsg(emailTemplateEngine.compile(template).apply(model));
+            email.setCharset(Charsets.UTF_8.toString());
         } catch (EmailException | IOException e) {
             throw new RuntimeException("Unable to create email", e);
         }

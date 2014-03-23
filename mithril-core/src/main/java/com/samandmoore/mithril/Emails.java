@@ -22,7 +22,7 @@ import com.google.common.collect.Iterables;
  * @author Sam Moore
  * @since 3/22/14 7:54 PM
  */
-final class Emails {
+public final class Emails {
 
     private static final Logger logger = LoggerFactory.getLogger(Emails.class);
 
@@ -53,7 +53,7 @@ final class Emails {
         logger.info(content.toString());
     }
 
-    private static String getMessageBody(Email email) {
+    public static String getMessageBody(Email email) {
 
         String body = "";
         try {

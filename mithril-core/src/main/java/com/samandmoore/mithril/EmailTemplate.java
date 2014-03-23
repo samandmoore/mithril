@@ -1,5 +1,6 @@
 package com.samandmoore.mithril;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -8,5 +9,5 @@ import java.util.Map;
  */
 public interface EmailTemplate {
 
-    String apply(Map<String, Object> model);
+    String apply(Map<String, Object> model) throws IOException;
 }

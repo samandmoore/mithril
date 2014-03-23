@@ -1,52 +1,70 @@
 project.group = "com.samandmoore"
 project.version = "0.0.1"
 
-ext {
-    guavaVersion = "16.0"
-    commonsEmailVersion = "1.3.2"
-    commonsLangVersion = "3.3.1"
-    slf4jVersion = "1.7.6"
-    junitVersion = "4.11"
-    mockitoVersion = "1.9.5"
-}
+allprojects {
+    ext {
+        guavaVersion = "16.0"
+        commonsEmailVersion = "1.3.2"
+        commonsLangVersion = "3.3.1"
+        slf4jVersion = "1.7.6"
+        junitVersion = "4.11"
+        mockitoVersion = "1.9.5"
+    }
 
-apply plugin: "java"
-apply plugin: "idea"
-apply plugin: "maven"
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "maven"
 
-repositories {
-    mavenCentral()
-}
+    repositories {
+        mavenCentral()
+    }
 
-dependencies {
-    compile "com.google.guava:guava:${guavaVersion}"
-    compile "org.apache.commons:commons-lang3:${commonsLangVersion}"
-    compile "org.apache.commons:commons-email:${commonsEmailVersion}"
+    dependencies {
+        testCompile "junit:junit:${junitVersion}"
+        testCompile "org.mockito:mockito-all:${mockitoVersion}"
+    }
 
-    compile "org.slf4j:slf4j-api:${slf4jVersion}"
-
-    runtime "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
-
-    testCompile "junit:junit:${junitVersion}"
-    testCompile "org.mockito:mockito-all:${mockitoVersion}"
-    testCompile "org.slf4j:slf4j-simple:${slf4jVersion}"
-}
-
-task writeNewPom << {
-    pom {
-        project {
-            inceptionYear "2014"
-            licenses {
-                license {
-                    name "The Apache Software License, Version 2.0"
-                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution "repo"
+    task writeNewPom << {
+        pom {
+            project {
+                inceptionYear "2014"
+                licenses {
+                    license {
+                        name "The Apache Software License, Version 2.0"
+                        url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        distribution "repo"
+                    }
                 }
             }
-        }
-    }.writeTo("$buildDir/pom.xml")
+        }.writeTo("$buildDir/pom.xml")
+    }
 }
 
+project(":mithril-core") {
+    dependencies {
+        compile "com.google.guava:guava:${guavaVersion}"
+        compile "org.apache.commons:commons-lang3:${commonsLangVersion}"
+        compile "org.apache.commons:commons-email:${commonsEmailVersion}"
+
+        compile "org.slf4j:slf4j-api:${slf4jVersion}"
+
+        runtime "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+
+        testCompile "org.slf4j:slf4j-simple:${slf4jVersion}"
+    }
+}
+
+project(":mithril-handlebars") {
+    ext {
+        handlebarsVersion = "1.2.1"
+    }
+
+    dependencies {
+        compile project(":mithril-core")
+
+        compile "com.github.jknack:handlebars:${handlebarsVersion}"
+    }
+}
 
 task wrapper(type: Wrapper) {
     gradleVersion = "1.10"

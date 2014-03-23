@@ -8,5 +8,5 @@ import org.junit.runners.BlockJUnit4ClassRunner;
  * @since 3/22/14 8:45 PM
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-abstract class AbstractTestBase {
+public abstract class AbstractTestBase {
 }
