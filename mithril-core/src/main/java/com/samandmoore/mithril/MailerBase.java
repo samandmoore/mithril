@@ -19,6 +19,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
+ * Base class for creating Mithril Mailers. Inherit from this class to pull in all the functionality required to send emails.
+ * 
  * @author Sam Moore
  * @since 3/22/14 7:49 PM
  */
@@ -55,36 +57,75 @@ public abstract class MailerBase {
         this.bccs = Sets.newHashSet();
     }
 
-    protected final void to(String address) {
+    /**
+     * Adds email address to the list of recipients
+     * 
+     * @param address the email address of the recipient
+     */
+    protected final void to(final String address) {
 
         to(address, "");
     }
 
-    protected final void to(String address, String name) {
+    /**
+     * Adds email address and name of recipient to list of recipients
+     * 
+     * @param address the email address of the recipient
+     * @param name the name of the recipient
+     */
+    protected final void to(final String address, final String name) {
 
         addAddressToCollection(tos, address, name);
     }
 
-    protected final void cc(String address) {
+    /**
+     * Adds email address to the list of CC recipients
+     * 
+     * @param address the email address of the CC recipient
+     */
+    protected final void cc(final String address) {
 
         cc(address, "");
     }
 
-    protected final void cc(String address, String name) {
+    /**
+     * Adds email address and name of recipient to the list of CC recipients
+     * 
+     * @param address the email address of the CC recipient
+     * @param name the name of the CC recipient
+     */
+    protected final void cc(final String address, final String name) {
 
         addAddressToCollection(ccs, address, name);
     }
 
-    protected final void bcc(String address) {
+    /**
+     * Adds email address to the list of BCC recipients
+     * 
+     * @param address the email address of the BCC recipient
+     */
+    protected final void bcc(final String address) {
 
         bcc(address, "");
     }
 
-    protected final void bcc(String address, String name) {
+    /**
+     * Adds email address and name of recipient to the list of BCC recipients
+     * 
+     * @param address the email address of the BCC recipient
+     * @param name the name of the BCC recipient
+     */
+    protected final void bcc(final String address, final String name) {
 
         addAddressToCollection(bccs, address, name);
     }
 
+    /**
+     * Sets the subject of the email.
+     * 
+     * @param subject the subject, optionally including string formatting patterns
+     * @param params an optional varargs of params for the optional formatting patterns in the subject
+     */
     protected final void subject(final String subject, final Object... params) {
 
         this.subject = !Strings.isNullOrEmpty(subject)
@@ -92,6 +133,12 @@ public abstract class MailerBase {
                 : subject;
     }
 
+    /**
+     * Adds the given value to the bag of data to be injected into the provided email template
+     * 
+     * @param key the key of the value to use inside the template
+     * @param value the value to access inside the template
+     */
     protected final void addToModel(final String key, final Object value) {
 
         this.model.put(key, value);
@@ -102,6 +149,12 @@ public abstract class MailerBase {
         set.add(new MailAddress(address, name));
     }
 
+    /**
+     * Constructs the email -- using the previously provided parameters -- and returns a {@link Deliverable}.
+     * 
+     * @param template the relative path to the template (relative to the {@link EmailTemplateEngine}'s root path).
+     * @return a {@link Deliverable} with the created email inside
+     */
     protected final Deliverable mail(String template) {
 
         isTrue(!Strings.isNullOrEmpty(this.subject));
@@ -120,6 +173,12 @@ public abstract class MailerBase {
         return createDeliverable(email);
     }
 
+    /**
+     * A simple hook that allows sub-classes to override the concrete-type of the {@link Deliverable} created by this Mailer.
+     * 
+     * @param email the email that was created from the call to mail
+     * @return a {@link Deliverable} with the created email inside
+     */
     protected Deliverable createDeliverable(final HtmlEmail email) {
 
         return new SimpleDeliverable(email, DEFAULT_MAIL_ACTION);
