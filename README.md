@@ -1,6 +1,6 @@
 Mithril
 =======
-## send emails in Java, ActiveMailer-style
+## send emails in Java, ActionMailer-style
 
 Mithril is an attempt to bring a pleasant API for sending emails to the JVM.
 
